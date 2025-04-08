@@ -1,0 +1,4 @@
+- [SDK](./navbar/sdk.md)
+- [Laboratory](https://laboratory.diamcircle.io/)
+- [Extension docs](./navbar/extension.md)
+- [Build Dapps](./navbar/build-dapps.md)

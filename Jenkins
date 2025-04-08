@@ -1,0 +1,24 @@
+node {
+  stage('SCM') {
+    checkout scm
+  }
+    
+    stage('aws connect'){
+     sh 'aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 684258736905.dkr.ecr.us-west-1.amazonaws.com'
+   }  
+    stage('Build Docker Image'){
+     sh 'docker build -t diamnet-doc-website-js-prod .'
+   }
+   stage('Tag Docker Image'){
+     sh 'docker tag diamnet-doc-website-js-prod:latest 684258736905.dkr.ecr.us-west-1.amazonaws.com/diamnet-doc-website-js-prod:latest'
+   }
+   stage('Push Docker Image'){
+     sh 'docker push 684258736905.dkr.ecr.us-west-1.amazonaws.com/diamnet-doc-website-js-prod:latest'
+   }
+    stage('Update Docker Image'){
+     sh 'aws ecs update-service --cluster  dc-diam-claim --service diamnet-doc-website-js-prod --force-new-deployment --region us-west-1'
+   }
+   stage('Email Notification'){
+     emailext attachLog: true, body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}", subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}", to: 'jbn@diamanteblockchain.com'
+   }
+}

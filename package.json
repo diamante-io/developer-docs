@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "docsify-tabs": "^1.6.3"
+  }
+}
